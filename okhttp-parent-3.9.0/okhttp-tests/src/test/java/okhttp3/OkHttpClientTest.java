@@ -67,6 +67,7 @@ public final class OkHttpClientTest {
     try {
       builder.connectTimeout(365, TimeUnit.DAYS);
     } catch (IllegalArgumentException ignored) {
+      System.out.println("timeoutValidRange() exception:" + ignored);
     }
     try {
       builder.writeTimeout(365, TimeUnit.DAYS);
@@ -119,6 +120,7 @@ public final class OkHttpClientTest {
       builder.protocols(Arrays.asList(Protocol.HTTP_1_0, Protocol.HTTP_1_1));
       fail();
     } catch (IllegalArgumentException expected) {
+      System.out.println("timeoutValidRange() exception:" + expected);
     }
   }
 
