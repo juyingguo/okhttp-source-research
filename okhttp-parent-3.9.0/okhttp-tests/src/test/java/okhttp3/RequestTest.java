@@ -46,7 +46,15 @@ public final class RequestTest {
     assertEquals(3, body.contentLength());
     assertEquals("e0a080", bodyToHex(body));
   }
-
+  @Test public void unicodeTest(){
+    char c = '\u0041';
+//    String content = "\u0800";
+    String content = "\u0960";
+    byte[] bytes = content.getBytes(Util.UTF_8);
+    System.out.println("c=" + c);
+    System.out.println("bytes length =" + bytes.length);
+    System.out.println("bytes to string =" + new String(bytes).toString());
+  }
   @Test public void stringWithNonDefaultCharsetSpecified() throws Exception {
     MediaType contentType = MediaType.parse("text/plain; charset=utf-16be");
     RequestBody body = RequestBody.create(contentType, "\u0800");
