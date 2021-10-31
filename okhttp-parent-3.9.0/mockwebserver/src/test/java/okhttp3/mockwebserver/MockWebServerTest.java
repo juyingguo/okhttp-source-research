@@ -33,6 +33,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
 import okhttp3.internal.Util;
@@ -51,6 +54,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public final class MockWebServerTest {
+  private static final Logger logger = Logger.getLogger(MockWebServerTest.class.getName());
   @Rule public final MockWebServer server = new MockWebServer();
 
   @Test public void defaultMockResponse() {
@@ -114,7 +118,6 @@ public final class MockWebServerTest {
         .addHeader("Cookies: delicious");
 
     response.setHeaders(new Headers.Builder().add("Cookie", "a=android").build());
-
     assertEquals(Arrays.asList("Cookie: a=android"), headersToList(response));
   }
 
@@ -132,6 +135,25 @@ public final class MockWebServerTest {
     RecordedRequest request = server.takeRequest();
     assertEquals("GET / HTTP/1.1", request.getRequestLine());
     assertEquals("en-US", request.getHeader("Accept-Language"));
+  }
+  @Test public void regularResponseAndDisconnect() throws Exception {
+    server.enqueue(new MockResponse().setBody("hello world"));
+
+    URL url = server.url("/").url();
+    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+    connection.setRequestProperty("Accept-Language", "en-US");
+    InputStream in = connection.getInputStream();
+    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+    assertEquals(HttpURLConnection.HTTP_OK, connection.getResponseCode());
+    assertEquals("hello world", reader.readLine());
+
+    RecordedRequest request = server.takeRequest();
+    assertEquals("GET / HTTP/1.1", request.getRequestLine());//HttpURLConnection send GET request
+    assertEquals("en-US", request.getHeader("Accept-Language"));
+
+    Thread.sleep(2000);
+    connection.disconnect();//after client exit,server call method okhttp3.internal.NamedRunnable#processOneRequest while cycle will
+    Thread.sleep(2000);
   }
 
   @Test public void redirect() throws Exception {
@@ -160,7 +182,7 @@ public final class MockWebServerTest {
     new Thread() {
       @Override public void run() {
         try {
-          Thread.sleep(1000);
+          Thread.sleep(3000);
         } catch (InterruptedException ignored) {
         }
         server.enqueue(new MockResponse().setBody("enqueued in the background"));
@@ -185,6 +207,8 @@ public final class MockWebServerTest {
       in.read();
       fail();
     } catch (IOException expected) {
+      logger.log(Level.SEVERE,
+              MockWebServerTest.this + " IOException:" + expected);
     }
   }
 
@@ -205,6 +229,8 @@ public final class MockWebServerTest {
       in.read(); // if Content-Length was accurate, this would return -1 immediately
       fail();
     } catch (SocketTimeoutException expected) {
+      logger.log(Level.SEVERE,
+              MockWebServerTest.this + " IOException:" + expected);
     }
 
     URLConnection urlConnection2 = server.url("/").url().openConnection();
@@ -216,6 +242,8 @@ public final class MockWebServerTest {
 
     assertEquals(0, server.takeRequest().getSequenceNumber());
     assertEquals(0, server.takeRequest().getSequenceNumber());
+
+    Thread.sleep(2000);
   }
 
   @Test public void disconnectAtStart() throws Exception {
@@ -225,6 +253,8 @@ public final class MockWebServerTest {
     try {
       server.url("/a").url().openConnection().getInputStream();
     } catch (IOException expected) {
+      logger.log(Level.SEVERE,
+              MockWebServerTest.this + " IOException:" + expected);
     }
     server.url("/b").url().openConnection().getInputStream(); // Should succeed.
   }

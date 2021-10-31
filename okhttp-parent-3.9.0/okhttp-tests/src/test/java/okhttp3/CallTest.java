@@ -210,6 +210,7 @@ public final class CallTest {
       new Request.Builder().method("GET", RequestBody.create(MediaType.parse("text/plain"), "abc"));
       fail();
     } catch (IllegalArgumentException expected) {
+      System.out.println("getWithRequestBody() Exception:" + expected.getMessage());
     }
   }
 
@@ -273,7 +274,7 @@ public final class CallTest {
     executeSynchronously(headRequest)
         .assertCode(200)
         .assertHeader("Content-Encoding", "chunked")
-        .assertBody("");
+        .assertBody("");//now body is "" not null,but MockResponse not setBody,for server body is null.why? transmit for client and server to change?
 
     Request getRequest = new Request.Builder()
         .url(server.url("/"))
@@ -3047,7 +3048,9 @@ public final class CallTest {
 
   private RecordedResponse executeSynchronously(String path, String... headers) throws IOException {
     Request.Builder builder = new Request.Builder();
-    builder.url(server.url(path));
+    HttpUrl url = server.url(path);
+    builder.url(url);
+    System.out.println("executeSynchronously url:" + url);
     for (int i = 0, size = headers.length; i < size; i += 2) {
       builder.addHeader(headers[i], headers[i + 1]);
     }
@@ -3057,8 +3060,10 @@ public final class CallTest {
   private RecordedResponse executeSynchronously(Request request) throws IOException {
     Call call = client.newCall(request);
     try {
+      System.out.println("executeSynchronously,request.url():" + request.url());
       Response response = call.execute();
       String bodyString = response.body().string();
+      System.out.println("executeSynchronously,bodyString:" + bodyString);
       return new RecordedResponse(request, response, null, bodyString, null);
     } catch (IOException e) {
       return new RecordedResponse(request, null, null, null, e);

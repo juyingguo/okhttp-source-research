@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import okhttp3.internal.URLFilter;
 import okhttp3.internal.huc.OkHttpURLConnection;
@@ -18,6 +20,7 @@ import okhttp3.internal.tls.SslClient;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okio.BufferedSource;
+import okio.Okio;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,6 +33,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class OkUrlFactoryTest {
+  private static final Logger logger = Logger.getLogger(OkUrlFactoryTest.class.getName());
   @Rule public MockWebServer server = new MockWebServer();
   @Rule public InMemoryFileSystem fileSystem = new InMemoryFileSystem();
 
@@ -60,6 +64,8 @@ public class OkUrlFactoryTest {
       conn.getResponseCode();
       fail();
     } catch (IOException ignored) {
+      logger.log(Level.SEVERE,
+              OkUrlFactoryTest.this + " IOException:" + ignored);
     }
   }
 
@@ -208,6 +214,7 @@ public class OkUrlFactoryTest {
       httpsConnection.getInputStream();
       fail("Connection was successful");
     } catch (IOException expected) {
+//      assertEquals("Blocked", expected.getMessage());
     }
   }
 

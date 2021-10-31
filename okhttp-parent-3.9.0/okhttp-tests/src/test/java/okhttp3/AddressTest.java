@@ -60,6 +60,8 @@ public final class AddressTest {
   @Test public void addressWithProxyToString() throws Exception {
     Address address = new Address("square.com", 80, dns, socketFactory, null, null, null,
         authenticator, Proxy.NO_PROXY, protocols, connectionSpecs, proxySelector);
-    assertEquals("Address{square.com:80, proxy=" + Proxy.NO_PROXY + "}", address.toString());
+//    assertEquals("Address{square.com:80, proxy=" + Proxy.NO_PROXY + "}", address.toString());
+    //or
+    assertEquals("Address{square.com:80, proxy=" + "DIRECT" + "}", address.toString());
   }
 }

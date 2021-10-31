@@ -141,6 +141,7 @@ public final class MockWebServer extends ExternalResource implements Closeable {
   private boolean started;
 
   @Override protected synchronized void before() {
+    ///logger.info(MockWebServer.this + " before() call.");
     if (started) return;
     try {
       start();
@@ -343,7 +344,7 @@ public final class MockWebServer extends ExternalResource implements Closeable {
 
       private void acceptConnections() throws Exception {
         while (true) {
-          Socket socket;
+          Socket socket = null;
           try {
             socket = serverSocket.accept();
           } catch (SocketException e) {
@@ -381,6 +382,7 @@ public final class MockWebServer extends ExternalResource implements Closeable {
   }
 
   @Override protected synchronized void after() {
+    ///logger.info(MockWebServer.this + " after() call.");
     try {
       shutdown();
     } catch (IOException e) {
@@ -393,6 +395,10 @@ public final class MockWebServer extends ExternalResource implements Closeable {
       int sequenceNumber = 0;
 
       @Override protected void execute() {
+        logger.info(
+                MockWebServer.this + " Socket raw.getLocalSocketAddress():" + raw.getLocalSocketAddress());
+        logger.info(
+                MockWebServer.this + " NamedRunnable(name):" + this.name);
         try {
           processConnection();
         } catch (IOException e) {
@@ -464,7 +470,8 @@ public final class MockWebServer extends ExternalResource implements Closeable {
               + raw.getInetAddress()
               + " didn't make a request");
         }
-
+        logger.info(
+                MockWebServer.this + " after client disconnect for current socket,now to call socket.close().");
         socket.close();
         openClientSockets.remove(socket);
       }
@@ -569,7 +576,11 @@ public final class MockWebServer extends ExternalResource implements Closeable {
     String request;
     try {
       request = source.readUtf8LineStrict();
+//      logger.log(Level.INFO,
+//              MockWebServer.this + " request str:" + request);
     } catch (IOException streamIsClosed) {
+//      logger.log(Level.SEVERE,
+//              MockWebServer.this + " IOException:" + streamIsClosed);
       return null; // no request because we closed the stream
     }
     if (request.length() == 0) {
@@ -700,6 +711,7 @@ public final class MockWebServer extends ExternalResource implements Closeable {
     sink.flush();
 
     Buffer body = response.getBody();
+    logger.info(MockWebServer.this + " body: " + body);
     if (body == null) return;
     sleepIfDelayed(response.getBodyDelay(TimeUnit.MILLISECONDS));
     throttledTransfer(response, socket, body, sink, body.size(), false);
