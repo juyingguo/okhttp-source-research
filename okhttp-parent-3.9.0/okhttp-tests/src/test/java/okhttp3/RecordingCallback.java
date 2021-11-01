@@ -35,6 +35,7 @@ public class RecordingCallback implements Callback {
   }
 
   @Override public synchronized void onResponse(Call call, Response response) throws IOException {
+    System.out.println(RecordingCallback.this + " onResponse.");
     String body = response.body().string();
     responses.add(new RecordedResponse(call.request(), response, null, body, null));
     notifyAll();

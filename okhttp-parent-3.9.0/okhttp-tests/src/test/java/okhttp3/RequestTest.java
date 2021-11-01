@@ -175,6 +175,7 @@ public final class RequestTest {
       builder.header("", "Value");
       fail();
     } catch (IllegalArgumentException expected) {
+      System.out.println("emptyNameForbidden() exception:" + expected);
     }
     try {
       builder.addHeader("", "Value");
@@ -199,6 +200,7 @@ public final class RequestTest {
       builder.header("Name", null);
       fail();
     } catch (NullPointerException expected) {
+      System.out.println("headerForbidsNullArguments() exception:" + expected);
     }
     try {
       builder.addHeader("Name", null);

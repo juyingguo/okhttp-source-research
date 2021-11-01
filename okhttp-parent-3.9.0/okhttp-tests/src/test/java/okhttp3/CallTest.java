@@ -407,6 +407,8 @@ public final class CallTest {
     assertEquals(body, recordedRequest1.getBody().readUtf8());
     assertNull(recordedRequest1.getHeader("Authorization"));
 
+    System.out.println("postBodyRetransmittedAfterAuthorizationFail,server.takeRequest() first call.");
+
     RecordedRequest recordedRequest2 = server.takeRequest();
     assertEquals("POST", recordedRequest2.getMethod());
     assertEquals(body, recordedRequest2.getBody().readUtf8());
@@ -795,9 +797,11 @@ public final class CallTest {
       bodySource.readByte();
       fail();
     } catch (IOException expected) {
+      System.out.println("timeoutsUpdatedOnReusedConnections(),IOException:" + expected);
       // Timed out as expected.
       long elapsedNanos = System.nanoTime() - startNanos;
       long elapsedMillis = TimeUnit.NANOSECONDS.toMillis(elapsedNanos);
+      System.out.println("timeoutsUpdatedOnReusedConnections(),elapsedMillis:" + elapsedMillis);
       assertTrue(Util.format("Timed out: %sms", elapsedMillis), elapsedMillis < 500);
     } finally {
       bodySource.close();
@@ -822,6 +826,7 @@ public final class CallTest {
       client.newCall(request).execute();
       fail();
     } catch (InterruptedIOException expected) {
+      System.out.println("timeoutsUpdatedOnReusedConnections(),Exception:" + expected);
     }
   }
 
@@ -3066,6 +3071,7 @@ public final class CallTest {
       System.out.println("executeSynchronously,bodyString:" + bodyString);
       return new RecordedResponse(request, response, null, bodyString, null);
     } catch (IOException e) {
+      System.out.println("executeSynchronously,Exception:" + e);
       return new RecordedResponse(request, null, null, null, e);
     }
   }
