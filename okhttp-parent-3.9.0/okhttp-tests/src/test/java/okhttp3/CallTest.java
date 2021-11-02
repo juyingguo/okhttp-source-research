@@ -886,6 +886,7 @@ public final class CallTest {
     OkHttpClient c = defaultClient().newBuilder()
         .addInterceptor(new Interceptor() {
           @Override public Response intercept(Chain chain) throws IOException {
+            System.out.println("intercept call.");
             throw new IOException();
           }
         })
@@ -994,6 +995,7 @@ public final class CallTest {
 
     client = client.newBuilder()
         .dns(new DoubleInetAddressDns())
+        .retryOnConnectionFailure(false)
         .build();
     assertTrue(client.retryOnConnectionFailure());
 
@@ -1160,7 +1162,7 @@ public final class CallTest {
         .addHeader("Location: http://square.com"));
 
     client = client.newBuilder()
-        .followSslRedirects(false)
+        .followSslRedirects(true)
         .build();
 
     Request request = new Request.Builder().url(server.url("/")).build();

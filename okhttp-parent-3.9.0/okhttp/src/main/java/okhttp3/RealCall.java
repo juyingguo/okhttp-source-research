@@ -157,6 +157,7 @@ final class RealCall implements Call {
           // Do not signal the callback twice!
           Platform.get().log(INFO, "Callback failure for " + toLoggableString(), e);
         } else {
+          //Platform.get().log(INFO, AsyncCall.class + " signalledCallback is " + signalledCallback + " Callback failure for " + toLoggableString(), e);
           eventListener.callFailed(RealCall.this, e);
           responseCallback.onFailure(RealCall.this, e);
         }

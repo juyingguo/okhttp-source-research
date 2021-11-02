@@ -351,6 +351,7 @@ public final class MockWebServer extends ExternalResource implements Closeable {
             logger.info(MockWebServer.this + " done accepting connections: " + e.getMessage());
             return;
           }
+          logger.info(MockWebServer.this + " acceptConnections(),new socket connect.");
           SocketPolicy socketPolicy = dispatcher.peek().getSocketPolicy();
           if (socketPolicy == DISCONNECT_AT_START) {
             dispatchBookkeepingRequest(0, socket);
@@ -557,6 +558,7 @@ public final class MockWebServer extends ExternalResource implements Closeable {
       socket.startHandshake(); // we're testing a handshake failure
       throw new AssertionError();
     } catch (IOException expected) {
+      logger.info(MockWebServer.this + " Exception: " + expected);
     }
     socket.close();
   }

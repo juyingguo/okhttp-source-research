@@ -1,0 +1,46 @@
+server.enqueue(new MockResponse().setBody("seed connection pool"));
+server.enqueue(new MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AFTER_REQUEST));
+server.enqueue(new MockResponse().setBody("retry success"));
+
+十一月 02, 2021 10:03:35 上午 okhttp3.mockwebserver.MockWebServer$2 execute
+信息: MockWebServer[24517] starting to accept connections
+十一月 02, 2021 10:03:35 上午 okhttp3.mockwebserver.MockWebServer$2 execute
+信息: MockWebServer[24518] starting to accept connections
+executeSynchronously url:http://activate.adobe.com:24518/
+executeSynchronously,request.url():http://activate.adobe.com:24518/
+十一月 02, 2021 10:03:36 上午 okhttp3.mockwebserver.MockWebServer$2 acceptConnections
+信息: MockWebServer[24518] acceptConnections(),new socket connect.
+十一月 02, 2021 10:03:36 上午 okhttp3.mockwebserver.MockWebServer$3 execute
+信息: MockWebServer[24518] Socket raw.getLocalSocketAddress():/127.0.0.1:24518
+十一月 02, 2021 10:03:36 上午 okhttp3.mockwebserver.MockWebServer$3 execute
+信息: MockWebServer[24518] NamedRunnable(name):MockWebServer /127.0.0.1:24519
+十一月 02, 2021 10:03:36 上午 okhttp3.mockwebserver.MockWebServer writeHttpResponse
+信息: MockWebServer[24518] body: [text=seed connection pool]
+十一月 02, 2021 10:03:36 上午 okhttp3.mockwebserver.MockWebServer$3 processOneRequest
+信息: MockWebServer[24518] received request: GET / HTTP/1.1 and responded: HTTP/1.1 200 OK
+十一月 02, 2021 10:03:36 上午 okhttp3.mockwebserver.MockWebServer$3 processConnection
+信息: MockWebServer[24518] after client disconnect for current socket,now to call socket.close().
+executeSynchronously,bodyString:seed connection pool
+executeSynchronously url:http://activate.adobe.com:24518/
+executeSynchronously,request.url():http://activate.adobe.com:24518/
+十一月 02, 2021 10:03:36 上午 okhttp3.mockwebserver.MockWebServer$2 acceptConnections
+信息: MockWebServer[24518] acceptConnections(),new socket connect.
+十一月 02, 2021 10:03:36 上午 okhttp3.mockwebserver.MockWebServer$3 execute
+信息: MockWebServer[24518] Socket raw.getLocalSocketAddress():/127.0.0.1:24518
+十一月 02, 2021 10:03:36 上午 okhttp3.mockwebserver.MockWebServer$3 execute
+信息: MockWebServer[24518] NamedRunnable(name):MockWebServer /127.0.0.1:24520
+十一月 02, 2021 10:03:36 上午 okhttp3.mockwebserver.MockWebServer writeHttpResponse
+信息: MockWebServer[24518] body: [text=retry success]
+十一月 02, 2021 10:03:36 上午 okhttp3.mockwebserver.MockWebServer$3 processOneRequest
+信息: MockWebServer[24518] received request: GET / HTTP/1.1 and responded: HTTP/1.1 200 OK
+executeSynchronously,bodyString:retry success
+十一月 02, 2021 10:03:36 上午 okhttp3.mockwebserver.MockWebServer$2 acceptConnections
+信息: MockWebServer[24518] done accepting connections: socket closed
+十一月 02, 2021 10:03:36 上午 okhttp3.mockwebserver.MockWebServer$3 processConnection
+信息: MockWebServer[24518] after client disconnect for current socket,now to call socket.close().
+十一月 02, 2021 10:03:36 上午 okhttp3.mockwebserver.MockWebServer$2 acceptConnections
+信息: MockWebServer[24517] done accepting connections: socket closed
+
+Process finished with exit code 0
+
+

@@ -30,6 +30,7 @@ public class RecordingCallback implements Callback {
   private final List<RecordedResponse> responses = new ArrayList<>();
 
   @Override public synchronized void onFailure(Call call, IOException e) {
+    System.out.println(RecordingCallback.this + " onFailure,call.isCanceled():" + call.isCanceled() + " Exception:" + e);
     responses.add(new RecordedResponse(call.request(), null, null, null, e));
     notifyAll();
   }
